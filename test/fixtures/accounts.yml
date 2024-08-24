@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  clients: one
+  account_number: MyString
+  current_value: 9.99
+  opening_date: 2024-08-22
+
+two:
+  clients: two
+  account_number: MyString
+  current_value: 9.99
+  opening_date: 2024-08-22

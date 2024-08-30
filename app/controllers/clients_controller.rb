@@ -8,14 +8,14 @@ class ClientsController < ApplicationController
     end
   end
 
+  def show
+    client = Client.find(params[:id])
+    render json: { client: ClientsSerializer.new(client).serializable_hash }, status: :ok
+  end
+
   private
 
   def client_params
     params.require(:client).permit(:name, :doc_number, :doc_type, :birth_date, :document_image)
-  end 
-
-def show
-    client = Client.find(params[:id])
-    render json: { client: ClientsSerializer.new(client).serializable_hash }, status: :ok
   end
 end

@@ -1,4 +1,4 @@
 class AccountsSerializer
   include JSONAPI::Serializer
-  attributes 
+  attributes :account_number, :current_value, :opening_date
 end

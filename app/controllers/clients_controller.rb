@@ -2,7 +2,7 @@ class ClientsController < ApplicationController
   def create
     client = Client.new(client_params)
     if client.save
-      render json: { client: client, password: client.generated_password }, status: :created
+      render json: { client: client, password: client.generate_password }, status: :created
     else
       render json: { errors: client.errors.full_messages }, status: :unprocessable_entity
     end
@@ -16,6 +16,6 @@ class ClientsController < ApplicationController
   private
 
   def client_params
-    params.require(:client).permit(:name, :doc_number, :doc_type, :birth_date, :document_image)
+    params.require(:client).permit(:name, :doc_number, :doc_type, :birth_date)
   end
 end

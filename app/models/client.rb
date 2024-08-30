@@ -1,6 +1,7 @@
 class Client < ApplicationRecord
   # has_secure_password
   before_validation :generate_password, on: :create
+  validate :validate_doc_number
   enum doc_type: { cpf: 0, rg: 1 }
 
   # Validação para o campo nome
@@ -21,24 +22,13 @@ class Client < ApplicationRecord
     end
   end
 
-  private
   def generate_password
     self.password = SecureRandom.hex(8)
   end
 
-  # Em caso de permitir que o usuario crie a senha isso será um verificador para análisar se o mesmo seguiu as regras de criação da senha
-  # Validação para a senha, para verificar se a mesma possui letras minusculas, maíusculas, números e símbolos
-  # validates :password, presence: true,
-  #   length: { minimum: 8 },
-  #   format: { with: /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}/,
-  #   message: "deve conter pelo menos 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo." }
-
   # Validação para o tipo de documento
   validates :doc_type, presence: true,
-    length: { minimum: 0, maximum: 1 },
-    numericality: { only_integer: true, message: "Selecione o tipo de documento" }
-
-  # altera os tamanhos permitidos dependendo do doc_type, ex: caso seja RG o doc_number deverá ter 9 digitos
+  numericality: { only_integer: true, message: "O tipo de documento deve ser um número inteiro" }
 
   # Validações para o número do documento
   validates :doc_number, presence: true,
@@ -46,21 +36,18 @@ class Client < ApplicationRecord
     numericality: { only_integer: true, message: "deve conter apenas números" },
     uniqueness: { case_sensitive: false, message: "Este documento já pertence a um usuário" }
 
-
+  # validate :validate_doc_number
+  # altera os tamanhos permitidos dependendo do doc_type, ex: caso seja RG o doc_number deverá ter 9 digitos
   def validate_doc_number
-    if doc_number.present?
-      case doc_type
-      when "cpf"
-        unless doc_number.length == 11
-          errors.add(:doc_number, "deve conter exatamente 11 dígitos para CPF.")
-        end
-      when "rg"
-        unless doc_number.length == 9
-          errors.add(:doc_number, "deve conter exatamente 9 dígitos para RG.")
-        end
-      end
+  if doc_number.present?
+    case doc_type
+    when "cpf"
+      errors.add(:doc_number, "deve conter exatamente 11 dígitos para CPF.") unless doc_number.length == 11
+    when "rg"
+      errors.add(:doc_number, "deve conter exatamente 9 dígitos para RG.") unless doc_number.length == 9
     end
   end
+end
 
   # Validação para a data de nascimento
   validates :birth_date, presence: true
@@ -79,3 +66,9 @@ class Client < ApplicationRecord
   #   message: "deve ser uma imagem JPEG ou PNG e ter entre 1 byte e 10 megabytes"
   #   }
 end
+# Em caso de permitir que o usuario crie a senha isso será um verificador para análisar se o mesmo seguiu as regras de criação da senha
+# Validação para a senha, para verificar se a mesma possui letras minusculas, maíusculas, números e símbolos
+# validates :password, presence: true,
+#   length: { minimum: 8 },
+#   format: { with: /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}/,
+#   message: "deve conter pelo menos 8 caracteres, com pelo menos uma letra maiúscula, uma letra minúscula, um número e um símbolo." }

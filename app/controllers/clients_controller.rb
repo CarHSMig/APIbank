@@ -2,7 +2,8 @@ class ClientsController < ApplicationController
   def create
     client = Client.new(client_params)
     if client.save
-      render json: { client: client, password: client.generate_password }, status: :created
+      account = client.create_account
+      render json: { client: client, account: account }, status: :created
     else
       render json: { errors: client.errors.full_messages }, status: :unprocessable_entity
     end

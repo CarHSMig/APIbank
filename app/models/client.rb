@@ -1,7 +1,10 @@
 class Client < ApplicationRecord
-  # has_secure_password
+  has_one :account, dependent: :destroy
+  after_create :create_account
   before_validation :generate_password, on: :create
   validate :validate_doc_number
+  before_validation :set_creation_date, on: :create
+
   enum doc_type: { cpf: 0, rg: 1 }
 
   # Validação para o campo nome
@@ -13,18 +16,8 @@ class Client < ApplicationRecord
   # Validação personalizada para garantir que o nome tenha pelo menos um nome e um sobrenome
   validate :verificacao_de_nome_e_sobrenome
 
-  def verificacao_de_nome_e_sobrenome
-    if name.present?
-      parts = name.split
-      errors.add(:name, "deve conter pelo menos um nome e um sobrenome.") if parts.size < 2
-    else
-      errors.add(:name, "não pode ser em branco.")
-    end
-  end
-
-  def generate_password
-    self.password = SecureRandom.hex(8)
-  end
+  # Verifica se a data de abertura da conta foi registrada
+  validates :registration_date, presence: true
 
   # Validação para o tipo de documento
   validates :doc_type, presence: true,
@@ -58,14 +51,31 @@ end
     errors.add(:birth_date, "O usuário não pode ser menor de 18 anos.")
   end
 
-  # Validação para a imagem do documento
-  # has_one_attached :document_image
-  # validates :document_image, attached: true, blob: {
-  #   content_type: [ "image/jpeg", "image/png" ],
-  #   size_range: 1..10.megabytes,
-  #   message: "deve ser uma imagem JPEG ou PNG e ter entre 1 byte e 10 megabytes"
-  #   }
+  def set_creation_date
+    self.registration_date = Time.current
+  end
+
+  def verificacao_de_nome_e_sobrenome
+    if name.present?
+      parts = name.split
+      errors.add(:name, "deve conter pelo menos um nome e um sobrenome.") if parts.size < 2
+    else
+      errors.add(:name, "não pode ser em branco.")
+    end
+  end
+
+  def generate_password
+    self.password = SecureRandom.hex(8)
+  end
 end
+# Validação para a imagem do documento
+# has_one_attached :document_image
+# validates :document_image, attached: true, blob: {
+#   content_type: [ "image/jpeg", "image/png" ],
+#   size_range: 1..10.megabytes,
+#   message: "deve ser uma imagem JPEG ou PNG e ter entre 1 byte e 10 megabytes"
+#   }
+
 # Em caso de permitir que o usuario crie a senha isso será um verificador para análisar se o mesmo seguiu as regras de criação da senha
 # Validação para a senha, para verificar se a mesma possui letras minusculas, maíusculas, números e símbolos
 # validates :password, presence: true,

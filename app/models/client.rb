@@ -2,8 +2,9 @@ class Client < ApplicationRecord
   has_one :account, dependent: :destroy
   after_create :create_account
   before_validation :generate_password, on: :create
-  validate :validate_doc_number
   before_validation :set_creation_date, on: :create
+  validate :validate_doc_number
+
 
   enum doc_type: { cpf: 0, rg: 1 }
 

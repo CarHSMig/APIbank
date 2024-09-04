@@ -20,5 +20,4 @@ class Account < ApplicationRecord
   def set_default_value
     self.current_value ||= 0.0
   end
-
 end

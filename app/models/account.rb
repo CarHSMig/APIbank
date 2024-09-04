@@ -7,7 +7,7 @@ class Account < ApplicationRecord
   validate :validate_doc_number
   validate :verificacao_de_idade
 
-  enum doc_type: { cpf: 0, rg: 1 }
+  enum doc_type: { cpf: "CPF", rg: "RG" }
 
    # Validação para o campo nome
    validates :name, presence: true,
@@ -15,18 +15,18 @@ class Account < ApplicationRecord
    format: { with: /\A[a-zA-Z\s]+\z/, message: "deve conter apenas letras e espaços." },
    uniqueness: { case_sensitive: false, message: "Este usuário já existe." }
 
- # Validação personalizada para garantir que o nome tenha pelo menos um nome e um sobrenome
- validate :verificacao_de_nome_e_sobrenome
+  # Validação personalizada para garantir que o nome tenha pelo menos um nome e um sobrenome
+  validate :verificacao_de_nome_e_sobrenome
 
- # Verifica se a data de abertura da conta foi registrada
- validates :registration_date, presence: true
+  # Verifica se a data de abertura da conta foi registrada
+  validates :registration_date, presence: true
 
- # Validação para o tipo de documento
- validates :doc_type, presence: true,
- numericality: { only_integer: true, message: "O tipo de documento deve ser um número inteiro" }
+  # Validação para o tipo de documento
+  validates :doc_type, presence: true,
+  inclusion: { in: %w[CPF RG], message: "%{value} não é uma operação válida" }
 
- # Validações para o número do documento
- validates :doc_number, presence: true,
+  # Validações para o número do documento
+  validates :doc_number, presence: true,
    length: { minimum: 9, maximum: 11 },
    numericality: { only_integer: true, message: "deve conter apenas números" },
    uniqueness: { case_sensitive: false, message: "Este documento já pertence a um usuário" }
@@ -47,17 +47,13 @@ class Account < ApplicationRecord
     end
   end
 
-  def set_default_value
-    self.current_value ||= 0.0
-  end
-
-    # altera os tamanhos permitidos dependendo do doc_type, ex: caso seja RG o doc_number deverá ter 9 digitos
+  # altera os tamanhos permitidos dependendo do doc_type, ex: caso seja RG o doc_number deverá ter 9 digitos
   def validate_doc_number
   if doc_number.present?
     case doc_type
-    when "cpf"
+    when "CPF"
       errors.add(:doc_number, "deve conter exatamente 11 dígitos para CPF.") unless doc_number.length == 11
-    when "rg"
+    when "RG"
       errors.add(:doc_number, "deve conter exatamente 9 dígitos para RG.") unless doc_number.length == 9
     end
   end
@@ -80,8 +76,14 @@ class Account < ApplicationRecord
     end
   end
 
+  # private
+
   def generate_password
     self.password = SecureRandom.hex(8)
   end
 
+  def set_default_value
+    self.current_value ||= 0.0
+  end
+end
 end

@@ -2,7 +2,6 @@ class AccountsController < ApplicationController
   def create
     account = Account.new(account_params)
     if account.save
-      account = account.create_account
       render json: { account: account, password: account.generate_password }, status: :created
     else
       render json: { errors: account.errors.full_messages }, status: :unprocessable_entity

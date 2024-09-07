@@ -1,51 +1,43 @@
 class TransactionsController < ApplicationController
-  before_action :set_transaction, only: %i[ show update destroy ]
-
-  # GET /transactions
-  def index
-    @transactions = Transaction.all
-
-    render json: @transactions
-  end
-
-  # GET /transactions/1
-  def show
-    render json: @transaction
-  end
-
-  # POST /transactions
   def create
-    @transaction = Transaction.new(transaction_params)
+    account = Account.find(params[:account_id])
+    balance_before = account.current_value
+    transaction_type = params[:transaction][:transaction_type]
+    value = params[:transaction][:value].to_d
 
-    if @transaction.save
-      render json: @transaction, status: :created, location: @transaction
+    # Verifica se é debito e se tem dinheiro suficiente
+    if transaction_type == "debit"
+      if value > balance_before
+        return render json: { errors: [ "Saldo insuficiente para a transação" ] }, status: :unprocessable_entity
+      end
+      final_balance = balance_before - value
+    elsif transaction_type == "credit"
+      final_balance = balance_before + value
     else
-      render json: @transaction.errors, status: :unprocessable_entity
+      return render json: { errors: [ "Tipo de transação inválido" ] }, status: :unprocessable_entity
     end
+
+    account.update(current_value: final_balance)
+
+    transaction = account.transactions.create(
+    transaction_type: transaction_type,
+    balance_before: balance_before,
+    value: value,
+    description: params[:transaction][:description]
+    )
+
+    # unless transaction.persisted?
+    #   return render json: { errors: transaction.errors.full_messages }, status: :unprocessable_entity
+    # end
+
+    render json: { transaction: TransactionsSerializer.new(transaction).serializable_hash, current_value: account.current_value }, status: :created
   end
 
-  # PATCH/PUT /transactions/1
-  def update
-    if @transaction.update(transaction_params)
-      render json: @transaction
-    else
-      render json: @transaction.errors, status: :unprocessable_entity
-    end
+  def index
+    account = Account.find(params[:account_id])
+    transactions = account.transactions.order(created_at: :asc)
+    render json: {
+      account: AccountsSerializer.new(account).serializable_hash, current_value: account.current_value,
+      transactions: TransactionsSerializer.new(transactions).serializable_hash }, status: :ok
   end
-
-  # DELETE /transactions/1
-  def destroy
-    @transaction.destroy!
-  end
-
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_transaction
-      @transaction = Transaction.find(params[:id])
-    end
-
-    # Only allow a list of trusted parameters through.
-    def transaction_params
-      params.require(:transaction).permit(:transaction_type, :value, :transaction_date, :description)
-    end
 end

@@ -20,8 +20,7 @@ class Account < ApplicationRecord
   validates :registration_date, presence: true
 
   # Validação para o tipo de documento
-  validates :doc_type, presence: true,
-  inclusion: { in: %w[CPF RG], message: "%{value} não é uma operação válida" }
+  validates :doc_type, presence: true
 
   # Validações para o número do documento
   validates :doc_number, presence: true,
@@ -74,8 +73,6 @@ class Account < ApplicationRecord
       errors.add(:name, "não pode ser em branco.")
     end
   end
-
-  private
 
   def generate_password
     self.password = SecureRandom.hex(8)

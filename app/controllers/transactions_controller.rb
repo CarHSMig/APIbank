@@ -22,6 +22,7 @@ class TransactionsController < ApplicationController
     transaction = account.transactions.create(
     transaction_type: transaction_type,
     balance_before: balance_before,
+    new_balance: final_balance,
     value: value,
     description: params[:transaction][:description]
     )

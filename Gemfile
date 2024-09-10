@@ -73,3 +73,7 @@ gem "brakeman"
 gem "importmap-rails"
 
 gem 'rubocop'
+
+  gem 'rubocop-rails'
+
+  gem 'rubocop-rails-omakase'

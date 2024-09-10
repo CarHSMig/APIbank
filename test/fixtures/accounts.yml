@@ -1,13 +1,19 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
-  clients: one
-  account_number: MyString
-  current_value: 9.99
-  opening_date: 2024-08-22
+  account_number: "123456"
+  current_value: 1000.00
+  name: "John Doe"
+  password: "password123"
+  birth_date: "1980-01-01"
+  doc_type: "CPF"
+  doc_number: "12345678901"
+  registration_date: "2024-01-01"
 
 two:
-  clients: two
-  account_number: MyString
-  current_value: 9.99
-  opening_date: 2024-08-22
+  account_number: "654321"
+  current_value: 500.00
+  name: "Jane Smith"
+  password: "password456"
+  birth_date: "1990-02-02"
+  doc_type: "RG"
+  doc_number: "987654321"
+  registration_date: "2024-02-01"

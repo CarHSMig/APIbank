@@ -71,3 +71,5 @@ gem "bcrypt"
 gem "brakeman"
 
 gem "importmap-rails"
+
+gem 'rubocop'

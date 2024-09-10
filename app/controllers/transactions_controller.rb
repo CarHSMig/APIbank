@@ -39,6 +39,6 @@ class TransactionsController < ApplicationController
     transactions = account.transactions.order(created_at: :asc)
     render json: {
       account: AccountsSerializer.new(account).serializable_hash, current_value: account.current_value,
-      transactions: TransactionsSerializer.new(transactions).serializable_hash }, status: :ok
+      transactions: TransactionsSerializer.new(transactions).serializable_hash}, status: :ok
   end
 end

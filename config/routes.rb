@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   resources :transactions
   resources :accounts
   resources :accounts do
-    resources :transactions, only: [:index, :create, :show]
+    resources :transactions, only: [ :index, :create, :show ]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

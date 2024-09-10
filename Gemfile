@@ -48,22 +48,26 @@ end
 # JSONAPI::Rails - Fornece suporte para a construção de APIs compatíveis com a
 # especificação JSON:API em aplicações Ruby on Rails. Ele ajuda a padronizar as respostas
 # da API, incluindo recursos como relacionamentos, filtragem e paginação.
-gem 'jsonapi-rails'
+gem "jsonapi-rails"
 
 # Kaminari - Uma gem de paginação para Rails que divide grandes conjuntos de registros
 # em páginas gerenciáveis. É personalizável e funciona com vários ORMs, permitindo a
 # implementação fácil de paginação em views e APIs.
-gem 'kaminari'
+gem "kaminari"
 
 # JSONAPI::Serializer - Um serializador leve que converte objetos Ruby em JSON de acordo
 # com a especificação JSON:API. Garante que as respostas da API sigam o formato correto,
 # melhorando a interoperabilidade da API com clientes.
-gem 'jsonapi-serializer'
+gem "jsonapi-serializer"
 
 # Ransack - Fornece uma funcionalidade flexível de busca e filtragem para aplicações Rails.
 # Permite a criação de formulários de busca avançada e consultas complexas com facilidade,
 # sendo útil para filtrar dados em views ou construir interfaces de busca.
-gem 'ransack'
+gem "ransack"
 
 
-gem 'bcrypt'
+gem "bcrypt"
+
+gem "brakeman"
+
+gem "importmap-rails"

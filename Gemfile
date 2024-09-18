@@ -77,3 +77,5 @@ gem 'rubocop'
   gem 'rubocop-rails'
 
   gem 'rubocop-rails-omakase'
+
+gem 'ruby-vips'

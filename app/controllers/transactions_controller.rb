@@ -36,9 +36,18 @@ class TransactionsController < ApplicationController
 
   def index
     account = Account.find(params[:account_id])
-    transactions = account.transactions.order(created_at: :asc)
+    transactions = account.transactions.order(created_at: :asc).page(params[:page]).per(10)
     render json: {
       account: AccountsSerializer.new(account).serializable_hash, current_value: account.current_value,
-      transactions: TransactionsSerializer.new(transactions).serializable_hash}, status: :ok
+      transactions: TransactionsSerializer.new(transactions, {
+      params: {
+        current_page: transactions.current_page,
+        next_page: transactions.next_page,
+        prev_page: transactions.prev_page,
+        total_pages: transactions.total_pages,
+        total_count: transactions.total_count
+      }
+    }).serializable_hash
+  }, status: :ok
   end
 end

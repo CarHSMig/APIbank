@@ -1,10 +1,18 @@
 class Account < ApplicationRecord
   has_many :transactions
+  has_one_attached :document_image
   before_validation :generate_account_number, :set_creation_date, :generate_password, :set_default_value, on: :create
 
   validate :validate_doc_number
 
   validate :verificacao_de_idade
+
+  # Validação para garantir que a imagem foi anexada
+  validates :document_image, presence: true
+
+  # Custom validation to ensure document_image is attached
+  validate :document_image_presence
+
   # Validação personalizada para garantir que o nome tenha pelo menos um nome e um sobrenome
   validate :verificacao_de_nome_e_sobrenome
 
@@ -80,5 +88,11 @@ class Account < ApplicationRecord
 
   def set_default_value
     self.current_value ||= 0.0
+  end
+
+  def document_image_presence
+    unless document_image.attached?
+      errors.add(:document_image, "deve ser anexada.")
+    end
   end
 end

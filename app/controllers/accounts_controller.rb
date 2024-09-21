@@ -22,3 +22,14 @@ class AccountsController < ApplicationController
     params.require(:account).permit(:name, :doc_number, :doc_type, :birth_date, :document_image)
   end
 end
+
+
+
+  # Possível metódo para apresentar todos os nomes de contas existentes para um futuro select criado em algum lugar do front
+  # def index
+  #   accounts = Account.all
+
+  #   render json: {
+  #     accounts: accounts.map { |account| { name: account.name } }
+  #   }, status: :ok
+  # end

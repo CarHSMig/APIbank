@@ -27,16 +27,21 @@ class TransactionsController < ApplicationController
     description: params[:transaction][:description]
     )
 
-    # unless transaction.persisted?
-    #   return render json: { errors: transaction.errors.full_messages }, status: :unprocessable_entity
-    # end
-
     render json: { transaction: TransactionsSerializer.new(transaction).serializable_hash, current_value: account.current_value }, status: :created
+  end
+
+  def index
+    account = Account.find(params[:account_id])
+    transactions = account.transactions.order(created_at: :desc).page(params[:page])
+    render json: {
+      account: AccountsSerializer.new(account).serializable_hash, current_value: account.current_value,
+      transactions: TransactionsSerializer.new(transactions).serializable_hash
+  }, status: :ok
   end
 
   def show
     account = Account.find(params[:account_id])
-    transactions = account.transactions.order(created_at: :asc).page(params[:page])
+    transactions = account.transactions.find(params[:id])
     render json: {
       account: AccountsSerializer.new(account).serializable_hash, current_value: account.current_value,
       transactions: TransactionsSerializer.new(transactions).serializable_hash
